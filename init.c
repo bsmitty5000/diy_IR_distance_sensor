@@ -88,9 +88,10 @@ void InitADC1() {
 
     AD1CON1bits.AD12B = 0; //10 bit operation
     AD1CON2bits.VCFG = 0; //using Vdd & Vss as reference
-    AD1CON3bits.ADCS = 0x0F; //setting Tad. must be at least 75ns. set to 434ns
-    //AD1CON3bits.SAMC = 0x0A; //auto sample time set to 1 Tad
-    //conversion time = (SAMC)*Tad + 12*Tad = 13*Tad (with SAMC = 1) = 5.6us
+    AD1CON3bits.ADCS = 0x0F; //setting Tad. must be at least 75ns
+    //Tad = (ADCS + 1) * Tcy = 16 * (1/40Mhz) = 400ns
+    AD1CON3bits.SAMC = 0x01; //auto sample time set to 1 Tad
+    //sample + conversion time = (SAMC)*Tad + 12*Tad = 13*Tad = 5.2us
     AD1PCFGL = 0xFFFF; //setting all ports to digital
     AD1PCFGLbits.PCFG0 = 0; //sets AN0 to analog
     AD1CHS0bits.CH0NA = 0; //channel 0 negative input is Vss
