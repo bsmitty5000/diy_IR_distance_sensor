@@ -24,7 +24,6 @@ volatile char uart_rcvd_char;
 //flag indicating char has been rcvd
 volatile char uart_rcvd;
 
-unsigned char sample_time;
 unsigned short raw_sample;
 
 int main()
@@ -33,20 +32,11 @@ int main()
     //initialize everything
     uart_rcvd_char = 0;
     uart_rcvd = 0;
-    sample_time = 0;
 
     //initializations
     InitClock();
     InitUART1();
-    InitTimer1();
     InitADC1();
-
-    //wait for signal from PC
-    //commenting when doing the measuring
-    //while(uart_rcvd == 0);
-
-    //don't turn on when doing the measuring
-    T1CONbits.TON = 0;
 
     while(1) {
 
@@ -67,16 +57,8 @@ void __attribute__((__interrupt__, no_auto_psv)) _U1RXInterrupt(void)
 
 	// Clear interrupt flag
 	IFS0bits.U1RXIF = 0;
-        //let the main loop know we received a char
-        uart_rcvd = 1;
-        //load the char
-        uart_rcvd_char = U1RXREG;
-}
-
-void __attribute__((__interrupt__, no_auto_psv)) _T1Interrupt(void)
-{
-
-    // Clear Timer 1 interrupt flag to allow another Timer 1 interrupt to occur.
-    IFS0bits.T1IF = 0;
-    sample_time = 1;
+    //let the main loop know we received a char
+    uart_rcvd = 1;
+    //load the char
+    uart_rcvd_char = U1RXREG;
 }
